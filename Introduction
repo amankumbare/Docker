@@ -1,32 +1,38 @@
-Ways to start Docker ?
-- Using dockerd 
--  Using dameon.json file
-
-Using dockerd is same as starting it using systemctl command.
-
-
-To configure the Docker daemon using a JSON file, create a file at /etc/docker/daemon.json on Linux systems
-
-Here’s what the configuration file looks like:
-{
-  "debug": true,
-  "tls": true,
-  "tlscert": "/var/docker/server.pem",
-  "tlskey": "/var/docker/serverkey.pem",
-  "hosts": ["tcp://192.168.59.3:2376"]
-}
+Why Docker ?
+- Eliminates guest OS
+- Light weight
+- Occupies less memory space
+- Short boot time as compared to Vm
+- Easy to scale up
+- Easily portable across different platforms
+- Data volumes can be shared and reused among diff containers which is opposite to Virtualisation
 
 
-With this configuration the Docker daemon runs in debug mode, uses TLS, and listens for traffic routed to 192.168.59.3 on port 2376. You can learn what configuration options are available in the dockerd reference docs
+What is Docker ?
+Tool which is used to automate the deployment of application in lightweight containers so that application can work efficiently in different environments.
 
 
-Here’s an example of how to manually start the Docker daemon, using the same configurations as above:
-dockerd --debug \
-  --tls=true \
-  --tlscert=/var/docker/server.pem \
-  --tlskey=/var/docker/serverkey.pem \
-  --host tcp://192.168.59.3:2376
+How does docker works ?
+- [ ] Docker engine / server : base engine installed on host machine to build and run containers using docket components and services.
+- [ ] It uses a client - server architecture 
+- [ ] Communication is using REST API.
 
 
-Reference:
-https://docs.docker.com/config/daemon/
+Components of Docker ?
+Server
+Images
+Registry 
+Client
+
+Difference between image / repository / registry :
+
+Image :
+- A Docker image can be compared to a git repo. A git repo can be hosted inside of a GitHub repository, but it could also be hosted on Gitlab, BitBucket or your own git repo hosting service. It could also sit on your development box and not be host
+- The same goes for a Docker image. You can choose to not push it anywhere, but you could also push it to the Docker Hub which is both a public and private service for hosting Docker repositories. There are other third party repository hosting services too.
+
+Repository :
+The thing to remember here is a Docker repository is a place for you to publish and access your Docker images.
+
+Registry :
+It’s also worth pointing out that the Docker Hub and other third party repository hosting services are called “registries”. A registry stores a collection of repositories
+
