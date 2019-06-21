@@ -1,0 +1,32 @@
+Ways to start Docker ?
+- Using dockerd 
+-  Using dameon.json file
+
+Using dockerd is same as starting it using systemctl command.
+
+
+To configure the Docker daemon using a JSON file, create a file at /etc/docker/daemon.json on Linux systems
+
+Here’s what the configuration file looks like:
+{
+  "debug": true,
+  "tls": true,
+  "tlscert": "/var/docker/server.pem",
+  "tlskey": "/var/docker/serverkey.pem",
+  "hosts": ["tcp://192.168.59.3:2376"]
+}
+
+
+With this configuration the Docker daemon runs in debug mode, uses TLS, and listens for traffic routed to 192.168.59.3 on port 2376. You can learn what configuration options are available in the dockerd reference docs
+
+
+Here’s an example of how to manually start the Docker daemon, using the same configurations as above:
+dockerd --debug \
+  --tls=true \
+  --tlscert=/var/docker/server.pem \
+  --tlskey=/var/docker/serverkey.pem \
+  --host tcp://192.168.59.3:2376
+
+
+Reference:
+https://docs.docker.com/config/daemon/

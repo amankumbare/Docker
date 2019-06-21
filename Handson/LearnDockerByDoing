@@ -1,0 +1,134 @@
+
+Running Your First Docker Container
+
+1. Docker Installation :
+https://runnable.com/docker/install-docker-on-linux
+
+>> Install Docker from the Default CentOS 7 Repository
+
+# sudo tee /etc/yum.repos.d/docker.repo <<-'EOF'
+ [dockerrepo]
+ name=Docker Repository
+ baseurl=https://yum.dockerproject.org/repo/main/centos/7/
+ enabled=1
+ gpgcheck=1
+ gpgkey=https://yum.dockerproject.org/gpg
+ EOF
+
+
+# yum install docker-engine -y
+
+>> Enable & start Docker service
+/bin/systemctl start docker
+/bin/systemctl status docker
+systemctl enable docker.service
+
+
+# ps -ef | grep docker
+root      3272  3266  0 15:05 ?        00:00:00 docker-containerd -l unix:///var/run/docker/libcontainerd/docker-containerd.sock --metrics-interval=0 --start-timeout 2m --state-dir /var/run/docker/libcontainerd/containerd --shim docker-containerd-shim --runtime docker-runc
+
+
+# free -g
+              total        used        free      shared  buff/cache   available
+Mem:              7           0           5           0           1           6
+Swap:             1           0           1
+
+
+# cat /proc/cpuinfo
+
+# lscpu
+Architecture:          x86_64
+CPU op-mode(s):        32-bit, 64-bit
+Byte Order:            Little Endian
+CPU(s):                2
+On-line CPU(s) list:   0,1
+Thread(s) per core:    1
+Core(s) per socket:    2
+Socket(s):             1
+
+
+>> User Permissions
+Create a new group named docker, then add the cloud_user user to the group.
+
+# usermod -a -G docker cloud_user
+
+# id cloud_user
+uid=1004(cloud_user) gid=1005(cloud_user) groups=1005(cloud_user),10(wheel),987(docker)
+
+
+>> hello-world
+After starting & enabling Docker, run the hello-world container image to verify installation
+
+# docker run hello-world
+
+Unable to find image 'hello-world:latest' locally
+latest: Pulling from library/hello-world
+1b930d010525: Pull complete
+Digest: sha256:41a65640635299bab090f783209c1e3a3f11934cf7756b09cb2f1e02147c6ed8
+Status: Downloaded newer image for hello-world:latest
+
+Hello from Docker!
+This message shows that your installation appears to be working correctly.
+
+To generate this message, Docker took the following steps:
+ 1. The Docker client contacted the Docker daemon.
+ 2. The Docker daemon pulled the "hello-world" image from the Docker Hub.
+    (amd64)
+ 3. The Docker daemon created a new container from that image which runs the
+    executable that produces the output you are currently reading.
+ 4. The Docker daemon streamed that output to the Docker client, which sent it
+    to your terminal.
+
+To try something more ambitious, you can run an Ubuntu container with:
+ $ docker run -it ubuntu bash
+
+Share images, automate workflows, and more with a free Docker ID:
+ https://hub.docker.com/
+
+For more examples and ideas, visit:
+ https://docs.docker.com/get-started/
+
+
+
+- Pulling image 06kellyjac/nyancat
+
+# docker pull 06kellyjac/nyancat
+Using default tag: latest
+latest: Pulling from 06kellyjac/nyancat
+426d0742acee: Pull complete
+Digest: sha256:40089cdd1e2468059d009ccb42fb1b248635bccb315e2c790e7c8fa56d107d4e
+Status: Downloaded newer image for 06kellyjac/nyancat:latest
+
+
+- Image is downloaded in :
+
+# ls -ltr /var/lib/docker/image/overlay/imagedb/content/sha256/
+total 8
+-rw-------. 1 root root 1510 Jun 21 15:14 fce289e99eb9bca977dae136fbe2a82b6b7d4c372474c9235adc1741675f587e
+-rw-------. 1 root root 1740 Jun 21 16:15 329bb91b174ba68942eebdbc9f0be8f677cd4dc005dc4dee9f67cc1dd3484032
+
+
+- Local Repo :
+cat /var/lib/docker/image/overlay/repositories.json
+{
+"Repositories":{
+"06kellyjac/nyancat":{"06kellyjac/nyancat:latest":"sha256:329bb91b174ba68942eebdbc9f0be8f677cd4dc005dc4dee9f67cc1dd3484032","06kellyjac/nyancat@sha256:40089cdd1e2468059d009ccb42fb1b248635bccb315e2c790e7c8fa56d107d4e":"sha256:329bb91b174ba68942eebdbc9f0be8f677cd4dc005dc4dee9f67cc1dd3484032"},
+
+"hello-world":{"hello-world:latest":"sha256:fce289e99eb9bca977dae136fbe2a82b6b7d4c372474c9235adc1741675f587e","hello-world@sha256:41a65640635299bab090f783209c1e3a3f11934cf7756b09cb2f1e02147c6ed8":"sha256:fce289e99eb9bca977dae136fbe2a82b6b7d4c372474c9235adc1741675f587e"}
+}
+}
+
+
+To verify the images which are downloaded :
+# docker images
+REPOSITORY           TAG                 IMAGE ID            CREATED             SIZE
+hello-world          latest              fce289e99eb9        5 months ago        1.84kB
+jeremy646/doge       latest              cddd2b20f7ed        7 months ago        111MB
+06kellyjac/nyancat   latest              329bb91b174b        11 months ago       782kB
+
+To verify running containers :
+
+# docker ps -a
+CONTAINER ID        IMAGE               COMMAND             CREATED             STATUS                         PORTS               NAMES
+caee8912dcdf        hello-world         "/hello"            About an hour ago   Exited (0) About an hour ago                       stupefied_wiles
+[root@amankumbare3c ~]#

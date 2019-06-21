@@ -1,0 +1,32 @@
+On which port docker daemon runs ?
+
+- The Docker daemon binds to a Unix socket instead of a TCP port. 
+- By default that Unix socket is owned by the user root and other users can only access it using sudo. 
+- The Docker daemon always runs as the root user.
+
+What is the difference in Unix socket and TCP port ?
+
+- A UNIX socket is an inter-process communication mechanism that allows bidirectional data exchange between processes running on the same machine.
+
+- IP sockets (especially TCP/IP sockets) are a mechanism allowing communication between processes over the network. In some cases, you can use TCP/IP sockets to talk with processes running on the same computer (by using the loopback interface).
+
+Manage Docker as a non-root user
+
+- If you don’t want to preface the docker command with sudo, create a Unix group called docker and add users to it. 
+
+- When the Docker daemon starts, it creates a Unix socket accessible by members of the docker group.
+
+ #  ls -ltr /\var/run/docker/libcontainerd/docker-containerd.sock
+srw-rw----. 1 root root 0 Jun 21 15:05 /var/run/docker/libcontainerd/docker-containerd.sock
+
+# su - akshay 
+
+# docker run hello-world
+docker: Got permission denied while trying to connect to the Docker daemon socket at unix:///var/run/docker.sock: Post http://%2Fvar%2Frun%2Fdocker.sock/v1.29/containers/create: dial unix /var/run/docker.sock: connect: permission denied.
+
+- If you don’t want to preface the docker command with sudo, create a Unix group called docker and add users to it. When the Docker daemon starts, it creates a Unix socket accessible by members of the docker group.
+- The docker group grants privileges equivalent to the root user
+- 
+
+Reference Links : 
+https://docs.docker.com/install/linux/linux-postinstall/#configure-docker-to-start-on-boot
