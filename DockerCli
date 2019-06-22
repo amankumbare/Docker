@@ -1,0 +1,96 @@
+Docker CLI cheat sheet
+
+1. Search Docker Hub for images.
+# docker search searchterm	
+
+2. Downloads an image from Docker Hub.
+docker pull image	
+
+3. Uploads an image to Docker Hub.
+# docker push user/image	
+
+4. Lists the history of an image.
+docker history user/image	
+
+
+
+Authentication:
+1. Authenticate to Docker Hub
+# docker login	
+(or other Docker registry).
+
+
+
+Containers:
+
+1. List all running containers.
+docker ps
+
+2. List all container instances, with their ID and status.
+# docker ps -a	
+
+3. Lists all images on the local machine.
+# docker images	
+
+4. Displays the logs from a running container.
+# docker logs [container name or ID]
+
+5. Displays the exposed port of a running container.
+# docker port [container name or ID]	
+
+6. Lists the changes made to a container.
+# docker diff [container name or ID]	
+
+
+Working with Images and Containers:
+
+1. Runs an image, creating a container and changing the terminal
+to the terminal within the container.
+
+# docker run -it user/image	
+
+2.Run an image in detached mode with port forwarding.
+# docker run -p $HOSTPORT:$CONTAINERPORT -d user/image	
+
+3.From within the container’s command prompt, detach and return to the host’s prompt.
+# ctrl+p then ctrl+q	
+
+4. Changes the command prompt from the host to a running container.
+# docker attach [container name or ID]	
+
+5. Start a container.
+# docker start [container name or ID]	
+
+6. Stop a container.
+# docker stop [container name or ID]	
+
+7. Delete a container.
+# docker rm -f [container name or ID]	
+
+8. Delete an image.
+# docker rmi	
+
+9. Add a new tag to an image.
+docker tag user/image:tag user/image:newtag	
+
+10. Executes a command within a running container.
+docker exec [container name or ID] shell command
+
+11. To remove all containers and images :
+
+docker rm $(docker ps -a -q)
+docker rmi $(docker images -q)
+
+Image Creation
+
+1. Save a container as an image.
+docker commit user/image	
+
+2. Save an image to a tar archive.
+docker save user/image	
+
+3. Builds a Docker image from a Dockerfile in the current directory
+docker build -t sampleuser/ubuntu 
+
+4. docker load	
+docker load	
