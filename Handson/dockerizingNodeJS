@@ -1,0 +1,30 @@
+>> Dockerizing a node.js application
+
+
+Student should clone the content-dockerquest-spacebones github repo into the cloud_user home directory.
+
+# git clone https://github.com/linuxacademy/content-dockerquest-spacebones
+
+>> Create Custom Dockerfile for Image Build
+Student should create a new Dockerfile under ~/content-dockerquest-spacebones/nodejs-app directory.
+
+# cat ~/content-dockerquest-spacebones/nodejs-app/Dockerfile
+FROM node:7
+WORKDIR /app
+COPY package.json /app
+RUN npm install
+COPY . /app
+CMD node index.js
+EXPOSE 8081
+
+>> Successful Creation of 'baconator' Image on Local System
+Student should use contents of ~/content-dockerquest-spacebones/nodejs-app to create a new Docker image named baconator:dev
+
+# docker build -t baconator:dev .
+
+# docker images
+
+# docker run -d -p 80:8081 baconator:dev
+
+# curl http://localhost
+Hello, Droolidia!

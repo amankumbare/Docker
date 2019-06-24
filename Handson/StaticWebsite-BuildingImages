@@ -1,0 +1,59 @@
+>> Pull Spacebones Image
+Student should pull the docker image located here. This can be done via the command:
+
+# docker pull spacebones/doge
+Since it is stored at Docker Hub, this will find the image required.
+
+>>  Start the Website Container and Redirect HTTP Port 80 to the Host
+
+The student will be starting a container from the spacebones/doge image installed locally in the previous step, named 'treatseekers', in disconnected mode, redirecting container port 80 to host port 80. The command to accomplish this is:
+
+# docker run -d  --name treatseekers -p 80:80 spacebones/doge
+ebcf31ed2f13b454431b28641a1e87245c8fa18ffa5b564cdeae5ef0ead24954
+
+-d detach from the container and print container name
+-p Publish a container's port(s) to the host (default [])
+-name name of the container
+
+You can verify it is running after with
+
+# docker ps
+CONTAINER ID        IMAGE               COMMAND                  CREATED             STATUS              PORTS                NAMES
+ebcf31ed2f13        spacebones/doge     "nginx -g 'daemon ..."   21 seconds ago      Up 20 seconds       0.0.0.0:80->80/tcp   treatseekers
+
+Which will tell you the container, name and port that is currently running
+
+Container Called 'Treatseekers' is Running
+
+>> exposed port of a running container.
+# docker port treatseekers
+80/tcp -> 0.0.0.0:80
+
+
+
+>> Pull the CentOS 6 Image from DockerHub
+The student is being asked to pull the latest CentOS 6 image from the DockerHub. This can be accomplished via:
+
+# docker pull centos:6
+You can verify with
+
+# docker images
+Which will show the local image installations, of which, CentOS:6 will now be one
+
+
+Create a Local Image from the Downloaded CentOS 6 Base
+student should create a new image using the Centos 6 image named spacebones:thewebsite
+
+# docker run -it centos:6 /bin/bash
+
+Inside the container:
+# yum install git httpd -y
+# git clone https://github.com/linuxacademy/content-dockerquest-spacebones/
+# cp /content-dockerquest-spacebones/doge/* /var/www/html/
+# mv /etc/httpd/conf.d/welcome.html /etc/httpd/conf.d/welcome.bak
+# chkconfig httpd on
+exit
+
+
+# docker commit <Container NAME/ID>  <Name>:<Tag>
+# docker commit f62b5cb6fe8b spacebone:thewebsit
