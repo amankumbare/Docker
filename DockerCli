@@ -41,6 +41,16 @@ docker ps
 6. Lists the changes made to a container.
 # docker diff [container name or ID]	
 
+7. To see the processes inside the containers :
+# docker top  my_daemonized
+
+8. How to run a process inside the Docker Container from outside?
+# docker exec -d  my_daemonized mkdir /tmp/test
+
+# docker exec -i -t  my_daemonized /bin/bash root@7b487f35905f:/# exit
+
+9. Inspect command will give you a whole lot of details including the arguments that were used to create the container, the storage driver used, the hostname, networking details, container and image details, cpu and memory details to name a few.
+# docker inspect my_daemonized
 
 Working with Images and Containers:
 

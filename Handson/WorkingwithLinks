@@ -1,0 +1,345 @@
+Container Networking with Links
+
+>> Verify SpaceBones Container is Running
+- If not running, start a new container using the Docker container image spacebones:thewebsite
+
+docker run -d -p 80:80 --name spacebones spacebones/spacebones:thewebsite
+
+>> Create Treatlist Container
+- If not already running, create a new container from the spacebones/postgres image named treatlist.
+
+docker run -d -P --name treatlist --link spacebones:spacebones spacebones/postgres
+
+
+>> Create Network Link
+Link the spacebones container with the treatlist container using legacy docker network links
+
+docker ps
+CONTAINER ID        IMAGE                              COMMAND                  CREATED              STATUS              PORTS                     NAMES
+c67f5e056081        spacebones/postgres                "su postgres -c '/..."   5 seconds ago        Up 4 seconds        0.0.0.0:32768->5432/tcp   treatlist
+122c1a9ddc72        spacebones/spacebones:thewebsite   "/httpd.sh"              About a minute ago   Up About a minute   0.0.0.0:80->80/tcp        spacebones
+[
+
+
+root@ip-10-0-1-192 ~]# docker inspect -f "{{.HostConfig.Links"}} treatlist
+[/spacebones:/treatlist/spacebones]
+
+
+
+# docker inspect spacebones/postgres
+[
+    {
+        "Id": "sha256:6fa973bb3c26975c81e1517842a2645205ba513dedc5190e4515f2ae77bd1add",
+        "RepoTags": [
+            "docker.io/spacebones/postgres:latest"
+        ],
+        "RepoDigests": [
+            "docker.io/spacebones/postgres@sha256:d022bdc43b55600c51d765f0fd122c350e86b8cc0d52df5191e757f5e6b6999e"
+        ],
+        "Parent": "",
+        "Comment": "",
+        "Created": "2014-06-02T23:51:31.834536181Z",
+        "Container": "4f5f9340d20248bb652f4363c9612c70aee42878fa464f867dacb113bf27773f",
+        "ContainerConfig": {
+            "Hostname": "1b89aa22e7e2",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5432/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "HOME=/",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PG_VERSION=9.3"
+            ],
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "#(nop) CMD [su postgres -c /usr/lib/postgresql/$PG_VERSION/bin/postgres -D /var/lib/postgresql/$PG_VERSION/main/ -c config_file=/etc/postgresql/$PG_VERSION/main/postgresql.conf]"
+            ],
+            "Image": "e06e512105c3ddce8faa3baa1fbad97d4834f85fb362777657b65edf091b7614",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": [],
+            "Labels": null
+        },
+        "DockerVersion": "0.11.1",
+        "Author": "Docker Education Team <education@docker.com>",
+        "Config": {
+            "Hostname": "1b89aa22e7e2",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "5432/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "HOME=/",
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+                "PG_VERSION=9.3"
+            ],
+            "Cmd": [
+                "su",
+                "postgres",
+                "-c",
+                "/usr/lib/postgresql/$PG_VERSION/bin/postgres -D /var/lib/postgresql/$PG_VERSION/main/ -c config_file=/etc/postgresql/$PG_VERSION/main/postgresql.conf"
+            ],
+            "Image": "e06e512105c3ddce8faa3baa1fbad97d4834f85fb362777657b65edf091b7614",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": [],
+            "Labels": null
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 364613142,
+        "VirtualSize": 364613142,
+        "GraphDriver": {
+            "Name": "overlay2",
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/bcf51ab61b4b93e796e114743360b09bfba0fe9f7ab209ad65294b0514f244f5/diff:/var/lib/docker/overlay2/5118f34e4153d441d8d66cff3272c7bc27f8eddbabbc947cdaf5aec53d3403c8/diff:/var/lib/docker/overlay2/598b6111531110d3fedc58cce5be671c3120b3fd8f47575da6d83274b8869df7/diff:/var/lib/docker/overlay2/2b84706315152a4fa4f3cdd260d0bb99199787de4fa93ba2c21ae6d191ebe606/diff:/var/lib/docker/overlay2/13133341ef51ff52ad5dbbe2f87ee8b81048d431ccc4511a7be6885197108a5c/diff:/var/lib/docker/overlay2/65d12fa1bff2ef024b391d89e3be51587e4d9445f3bc9ca72edd9ec224b72b2e/diff:/var/lib/docker/overlay2/ba1de8e4b2aa935847cc13796017eecd5f2ee46fce6955bba9e58ec117bdc8ca/diff:/var/lib/docker/overlay2/3ad4f4a0b84c6986df60183c63b431bd37e720c8582be6ce910a52a7ac4f7b17/diff:/var/lib/docker/overlay2/5f4b743086956f8ef128073bef330ed194f1b0625a45bb36641fd4185116ff04/diff:/var/lib/docker/overlay2/820ae243a2e03804e72587de09e0c228ff063fbb82a455fd27a6da7abb656147/diff:/var/lib/docker/overlay2/129b9ebe5935e917c457f482da5320932fd6de6b9483b44bda72b8e6d01c4dee/diff:/var/lib/docker/overlay2/067dd32fc2505d051c79166c45293d4454d28c980924846d0a80bc49a65f6b6b/diff:/var/lib/docker/overlay2/1266d2facd72d0d9887d140a1c40a7e54a36b09cb9c8fe2516956cab850b1ef5/diff",
+                "MergedDir": "/var/lib/docker/overlay2/c158db65750c2b0121d5cc8ae1dc1a84bbd8147ee040e38bd711dee213317d53/merged",
+                "UpperDir": "/var/lib/docker/overlay2/c158db65750c2b0121d5cc8ae1dc1a84bbd8147ee040e38bd711dee213317d53/diff",
+                "WorkDir": "/var/lib/docker/overlay2/c158db65750c2b0121d5cc8ae1dc1a84bbd8147ee040e38bd711dee213317d53/work"
+            }
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:138331e9552c1a47df0658ffcb80a1ac889e09759fdadfc28593f392f1e57b57",
+                "sha256:32d28908d30a5c190499d98aef95b41b4ac15c4c827531949ba3035ec677ab42",
+                "sha256:7195e62f345dd9181d84a1f2fff1ce5075d5989da8a0464d598a75161150e1e6",
+                "sha256:de380811142a84ed40d62e82cfa6f9f1b78c3bebb3f2692173f67c40f5122e12",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:0e3a014913555afff999ba86678d86d2430fb5fd9482ccc7328848c6234c15ba",
+                "sha256:1bba852891499f42692a95868a05183159c9b14348a893ee2d3b64fa723af7aa",
+                "sha256:3af6ca02c597509cb2e7825697da32f99c372749dbb9a744f8a8f7ea5bbbdd47",
+                "sha256:bc05e893cedf8019ae1b4e8b5f47222a675b029ea8d0ae71b4bce7f003ac7917",
+                "sha256:131ff6c18f76be9cdf397e364be2afe425e2db52d7a20a29971e9eef378c630d",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef",
+                "sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef"
+            ]
+        }
+    }
+]
+
+
+
+
+
+
+
+
+
+[root@ip-10-0-1-192 ~]# docker inspect 122c1a9ddc72
+[
+    {
+        "Id": "122c1a9ddc729001b5f497db5edf4e264542fb9133e0ff657c93be0a1c1e465d",
+        "Created": "2019-06-24T18:07:02.167904317Z",
+        "Path": "/httpd.sh",
+        "Args": [],
+        "State": {
+            "Status": "running",
+            "Running": true,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 5151,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2019-06-24T18:07:02.60146522Z",
+            "FinishedAt": "0001-01-01T00:00:00Z"
+        },
+        "Image": "sha256:5f9cfb85ce71fff2ceccc9ec0f5f60fb946fd70f20b28ce312238a0a1960f679",
+        "ResolvConfPath": "/var/lib/docker/containers/122c1a9ddc729001b5f497db5edf4e264542fb9133e0ff657c93be0a1c1e465d/resolv.conf",
+        "HostnamePath": "/var/lib/docker/containers/122c1a9ddc729001b5f497db5edf4e264542fb9133e0ff657c93be0a1c1e465d/hostname",
+        "HostsPath": "/var/lib/docker/containers/122c1a9ddc729001b5f497db5edf4e264542fb9133e0ff657c93be0a1c1e465d/hosts",
+        "LogPath": "",
+        "Name": "/spacebones",
+        "RestartCount": 0,
+        "Driver": "overlay2",
+        "MountLabel": "system_u:object_r:svirt_sandbox_file_t:s0:c154,c849",
+        "ProcessLabel": "system_u:system_r:svirt_lxc_net_t:s0:c154,c849",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "journald",
+                "Config": {}
+            },
+            "NetworkMode": "default",
+            "PortBindings": {
+                "80/tcp": [
+                    {
+                        "HostIp": "",
+                        "HostPort": "80"
+                    }
+                ]
+            },
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "CapAdd": null,
+            "CapDrop": null,
+            "Dns": [],
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 67108864,
+            "Runtime": "docker-runc",
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "Isolation": "",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": null,
+            "BlkioDeviceReadBps": null,
+            "BlkioDeviceWriteBps": null,
+            "BlkioDeviceReadIOps": null,
+            "BlkioDeviceWriteIOps": null,
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DiskQuota": 0,
+            "KernelMemory": 0,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": -1,
+            "OomKillDisable": false,
+            "PidsLimit": 0,
+            "Ulimits": null,
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0
+        },
+        "GraphDriver": {
+            "Name": "overlay2",
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/5ee6275c2fd65986abbaaf190b6229472689c8faa8900a67b61905c587769df3-init/diff:/var/lib/docker/overlay2/0b1b0c72423d613039320d550422946519d17dbeff16c7b3bbdc8dd9d110e4d1/diff:/var/lib/docker/overlay2/765b45e70f8a67a06404ec7dc35ab69e3c4f65e339334bfa10d6f5156ea834d0/diff:/var/lib/docker/overlay2/fc564a64187f864e0fc3eaa7404cb5a97435379816c79dbfc473faacac0478ca/diff:/var/lib/docker/overlay2/6dcd5e6a09e8cf425e3b4c26abe4d89d70e3865e9e85b08ff2ea72c5faa70ae6/diff:/var/lib/docker/overlay2/90bde76af4f1e2195da704d2cf09f62618b6a4e5fefa3eee1064e26b7e873626/diff",
+                "MergedDir": "/var/lib/docker/overlay2/5ee6275c2fd65986abbaaf190b6229472689c8faa8900a67b61905c587769df3/merged",
+                "UpperDir": "/var/lib/docker/overlay2/5ee6275c2fd65986abbaaf190b6229472689c8faa8900a67b61905c587769df3/diff",
+                "WorkDir": "/var/lib/docker/overlay2/5ee6275c2fd65986abbaaf190b6229472689c8faa8900a67b61905c587769df3/work"
+            }
+        },
+        "Mounts": [],
+        "Config": {
+            "Hostname": "122c1a9ddc72",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "80/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/httpd.sh"
+            ],
+            "ArgsEscaped": true,
+            "Image": "spacebones/spacebones:thewebsite",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "build-date": "20180402",
+                "license": "GPLv2",
+                "name": "CentOS Base Image",
+                "vendor": "CentOS"
+            }
+        },
+        "NetworkSettings": {
+            "Bridge": "",
+            "SandboxID": "bf98ae508554f2d597090b657b630ffa12515936db97637816269666a795ca64",
+            "HairpinMode": false,
+            "LinkLocalIPv6Address": "",
+            "LinkLocalIPv6PrefixLen": 0,
+            "Ports": {
+                "80/tcp": [
+                    {
+                        "HostIp": "0.0.0.0",
+                        "HostPort": "80"
+                    }
+                ]
+            },
+            "SandboxKey": "/var/run/docker/netns/bf98ae508554",
+            "SecondaryIPAddresses": null,
+            "SecondaryIPv6Addresses": null,
+            "EndpointID": "b9572adf1a35750bd9d6d87659041f1c661b3ecb5b624d1d4888e800cc5fa0bf",
+            "Gateway": "172.17.0.1",
+            "GlobalIPv6Address": "",
+            "GlobalIPv6PrefixLen": 0,
+            "IPAddress": "172.17.0.2",
+            "IPPrefixLen": 16,
+            "IPv6Gateway": "",
+            "MacAddress": "02:42:ac:11:00:02",
+            "Networks": {
+                "bridge": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "NetworkID": "884543a94937a84b13f9ae2e25b8d6337ea27eeaf87c261621a75dc0de87835e",
+                    "EndpointID": "b9572adf1a35750bd9d6d87659041f1c661b3ecb5b624d1d4888e800cc5fa0bf",
+                    "Gateway": "172.17.0.1",
+                    "IPAddress": "172.17.0.2",
+                    "IPPrefixLen": 16,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "MacAddress": "02:42:ac:11:00:02"
+                }
+            }
+        }
+    }
+]
+[root@ip-10-0-1-192 ~]#
